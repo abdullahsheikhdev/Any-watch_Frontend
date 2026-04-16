@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Contrail_One, } from "next/font/google";
-import Navbar from "@/components/navbar";
 import "./globals.css";
 
 const contrail = Contrail_One({
@@ -24,7 +23,6 @@ export default function RootLayout({
       lang="en"
       className={` ${contrail.variable} h-full antialiased`}
     >
-      <Navbar />
       <body className=" min-h-full flex flex-col">{children}
       </body>
     </html>
