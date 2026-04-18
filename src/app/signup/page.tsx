@@ -84,7 +84,7 @@ export default function RegisterPage() {
       // Remove confirmPassword before sending to backend
       const { confirmPassword, ...registrationData } = formData
       
-      const response = await axios.post<AuthResponse>('/api/auth/register', registrationData)
+      const response = await axios.post<AuthResponse>('http://localhost:4000/api/auth/register', registrationData)
       
       if (response.data.success) {
         console.log('Registration successful:', response.data)
@@ -98,7 +98,7 @@ export default function RegisterPage() {
           router.push('/dashboard')
         } else {
           // Redirect to login page
-          router.push('/login')
+          router.push('/')
         }
       }
     } catch (error: unknown) {

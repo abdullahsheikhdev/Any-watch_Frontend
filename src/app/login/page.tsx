@@ -64,7 +64,7 @@ export default function LoginPage() {
     setErrors({})
 
     try {
-      const response = await axios.post<AuthResponse>('/api/auth/login', formData)
+      const response = await axios.post<AuthResponse>('http://localhost:4000/api/auth/login', formData)
       
       if (response.data.success && response.data.token) {
         // Store token
@@ -78,7 +78,7 @@ export default function LoginPage() {
         console.log('Login successful:', response.data)
         
         // Redirect to dashboard
-        router.push('/dashboard')
+        router.push('/public')
       }
     } catch (error: unknown) {
       console.error('Login error:', error)
