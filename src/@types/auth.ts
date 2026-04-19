@@ -28,3 +28,9 @@ export interface AuthResponse {
     email: string
   }
 }
+
+export interface otpResponse {
+  success: boolean
+  message: string
+  otp?: string
+}
