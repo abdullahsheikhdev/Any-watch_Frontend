@@ -7,9 +7,9 @@ import type { NavLink, User } from '@/@types/navbar'
 
 const navLinks: NavLink[] = [
   { name: 'Home', href: '/' },
+  { name: 'Movies', href: '/movies' },
+  { name: 'Theaters', href: '/theaters' },
   { name: 'About', href: '/about' },
-  { name: 'Services', href: '/services' },
-  { name: 'Contact', href: '/contact' },
 ]
 
 export default function Navbar() {
@@ -37,7 +37,7 @@ export default function Navbar() {
           {/* Logo */}
           <div className="shrink-0">
             <Link href="/" className="text-2xl font-bold hover:text-gray-300 transition">
-              MyLogo
+              <span className='text-3xl text-[#F84565]'>A</span>ny Watch
             </Link>
           </div>
 
