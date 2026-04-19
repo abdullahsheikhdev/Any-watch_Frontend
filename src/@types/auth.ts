@@ -34,3 +34,19 @@ export interface otpResponse {
   message: string
   otp?: string
 }
+
+export interface VerifyEmailResponse {
+  success: boolean;
+  message: string;
+  expired?: boolean;
+}
+
+export interface ErrorResponse {
+  success: boolean;
+  message: string;
+  expired?: boolean;
+}
+
+export interface Errors {
+  general?: string;
+}

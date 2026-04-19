@@ -3,7 +3,7 @@
 import { useState, FormEvent, ChangeEvent, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { RegisterFormData, FormErrors, AuthResponse, otpResponse } from "@/@types/auth";
+import type { RegisterFormData, FormErrors, AuthResponse, otpResponse, VerifyEmailResponse, ErrorResponse } from "@/@types/auth";
 import axios from "axios";
 
 export default function RegisterPage() {
@@ -176,33 +176,84 @@ export default function RegisterPage() {
     }
   };
 
-  const onSubmitOtpHandler = async (e: FormEvent<HTMLFormElement>) => {
+const onSubmitOtpHandler = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    // TODO: Implement OTP verification logic
-    const otp = inputRef.current.map((input) => input.value).join("");
-    if (otp.length !== 6) {
+    
+    // Collect OTP from inputs
+    const code = inputRef.current
+      .filter((input): input is HTMLInputElement => input !== null)
+      .map((input) => input.value)
+      .join("");
+    
+    // Validation
+    if (code.length !== 6) {
       setErrors({ general: "Please enter the 6 digit OTP" });
       return;
     }
-    setIsLoading(true);
-    try {
-      const { data } = await axios.post<otpResponse>("http://localhost:4000/api/auth/verify-email", {
-        email: formData.email,
-        otp,
-      });
-      if (data.success) {
-        router.push("/");
-      } else {
-        setErrors({ general: data.message || "OTP verification failed" });
-      }
-    } catch (error:unknown) {
-      console.error("Registration error:", error);
-    } finally {
-      setIsLoading(false);
 
+    if (!/^\d{6}$/.test(code)) {
+      setErrors({ general: "OTP must be 6 digits" });
+      return;
     }
 
-    setOtpSent(false);
+    setIsLoading(true);
+    setErrors({});
+    
+    try {
+      const { data } = await axios.post<VerifyEmailResponse>(
+        "http://localhost:4000/api/auth/verify-email", 
+        {
+          code, // ✅ Changed from 'otp' to 'code'
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // ✅ Important: Send cookie with token
+        }
+      );
+      
+      if (data.success) {
+        console.log("✅ Email verified successfully");
+        // Clear OTP inputs
+        inputRef.current.forEach(input => {
+          if (input) input.value = "";
+        });
+        // Redirect to home
+        router.push("/");
+      } else {
+        setErrors({ general: data.message });
+      }
+    } catch (error: unknown) {
+      console.error("❌ OTP verification error:", error);
+      
+      if (axios.isAxiosError<ErrorResponse>(error)) {
+        if (error.response) {
+          const errorData = error.response.data;
+          
+          // Handle expired OTP
+          if (errorData.expired) {
+            setErrors({ 
+              general: errorData.message || "OTP has expired. Please request a new one." 
+            });
+          } else {
+            setErrors({ 
+              general: errorData.message || "Verification failed" 
+            });
+          }
+        } else if (error.request) {
+          setErrors({ general: "No response from server. Please try again." });
+        } else {
+          setErrors({ general: "Network error. Please check your connection." });
+        }
+      } else if (error instanceof Error) {
+        setErrors({ general: error.message });
+      } else {
+        setErrors({ general: "An unexpected error occurred" });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
