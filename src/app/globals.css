@@ -1,3 +1,9 @@
 @import "tailwindcss";
 
 
+.liner {
+    background: linear-gradient(322deg, #ddcde0 0%, #71606b 85%);
+}
+.allLiner {
+    background: linear-gradient(199deg, #9b8f8f 0%, #504747 85%);
+}

@@ -3,7 +3,13 @@
 import { useState, FormEvent, ChangeEvent, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { RegisterFormData, FormErrors, AuthResponse, otpResponse, VerifyEmailResponse, ErrorResponse } from "@/@types/auth";
+import type {
+  RegisterFormData,
+  FormErrors,
+  AuthResponse,
+  VerifyEmailResponse,
+  ErrorResponse,
+} from "@/@types/auth";
 import axios from "axios";
 
 export default function RegisterPage() {
@@ -17,7 +23,6 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const inputRef = useRef<HTMLInputElement[]>([]);
 
@@ -33,10 +38,13 @@ export default function RegisterPage() {
   };
 
   const handleInput = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.InputEvent<HTMLInputElement>,
     index: number,
   ): void => {
-    if (e.target.value.length > 0 && index < inputRef.current.length - 1) {
+    const value = e.currentTarget.value;
+
+    // Your logic here
+    if (value && index < inputRef.current.length - 1) {
       inputRef.current[index + 1].focus();
     }
   };
@@ -45,11 +53,12 @@ export default function RegisterPage() {
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number,
   ): void => {
-    if (e.key === "Backspace" && e.target.value === "" && index > 0) {
-      inputRef.current[index - 1].focus();
+    if (e.target instanceof HTMLInputElement) {
+      if (e.key === "Backspace" && e.target.value === "" && index > 0) {
+        inputRef.current[index - 1].focus();
+      }
     }
   };
-
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -73,13 +82,6 @@ export default function RegisterPage() {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
-    }
-
-    // Confirm password validation
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -113,12 +115,9 @@ export default function RegisterPage() {
     setErrors({});
 
     try {
-      // Remove confirmPassword before sending to backend
-      const { confirmPassword, ...registrationData } = formData;
-
       const response = await axios.post<AuthResponse>(
         "http://localhost:4000/api/auth/register",
-        registrationData,
+        formData,
       );
 
       if (response.data.success) {
@@ -176,15 +175,17 @@ export default function RegisterPage() {
     }
   };
 
-const onSubmitOtpHandler = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+  const onSubmitOtpHandler = async (
+    e: FormEvent<HTMLFormElement>,
+  ): Promise<void> => {
     e.preventDefault();
-    
+
     // Collect OTP from inputs
     const code = inputRef.current
       .filter((input): input is HTMLInputElement => input !== null)
       .map((input) => input.value)
       .join("");
-    
+
     // Validation
     if (code.length !== 6) {
       setErrors({ general: "Please enter the 6 digit OTP" });
@@ -198,10 +199,10 @@ const onSubmitOtpHandler = async (e: FormEvent<HTMLFormElement>): Promise<void> 
 
     setIsLoading(true);
     setErrors({});
-    
+
     try {
       const { data } = await axios.post<VerifyEmailResponse>(
-        "http://localhost:4000/api/auth/verify-email", 
+        "http://localhost:4000/api/auth/verify-email",
         {
           code, // ✅ Changed from 'otp' to 'code'
         },
@@ -210,13 +211,13 @@ const onSubmitOtpHandler = async (e: FormEvent<HTMLFormElement>): Promise<void> 
             "Content-Type": "application/json",
           },
           withCredentials: true, // ✅ Important: Send cookie with token
-        }
+        },
       );
-      
+
       if (data.success) {
         console.log("✅ Email verified successfully");
         // Clear OTP inputs
-        inputRef.current.forEach(input => {
+        inputRef.current.forEach((input) => {
           if (input) input.value = "";
         });
         // Redirect to home
@@ -226,25 +227,29 @@ const onSubmitOtpHandler = async (e: FormEvent<HTMLFormElement>): Promise<void> 
       }
     } catch (error: unknown) {
       console.error("❌ OTP verification error:", error);
-      
+
       if (axios.isAxiosError<ErrorResponse>(error)) {
         if (error.response) {
           const errorData = error.response.data;
-          
+
           // Handle expired OTP
           if (errorData.expired) {
-            setErrors({ 
-              general: errorData.message || "OTP has expired. Please request a new one." 
+            setErrors({
+              general:
+                errorData.message ||
+                "OTP has expired. Please request a new one.",
             });
           } else {
-            setErrors({ 
-              general: errorData.message || "Verification failed" 
+            setErrors({
+              general: errorData.message || "Verification failed",
             });
           }
         } else if (error.request) {
           setErrors({ general: "No response from server. Please try again." });
         } else {
-          setErrors({ general: "Network error. Please check your connection." });
+          setErrors({
+            general: "Network error. Please check your connection.",
+          });
         }
       } else if (error instanceof Error) {
         setErrors({ general: error.message });
@@ -286,12 +291,11 @@ const onSubmitOtpHandler = async (e: FormEvent<HTMLFormElement>): Promise<void> 
                 type="text"
                 id="name"
                 name="name"
-                value={formData.name}
                 onChange={handleChange}
                 className={`w-full px-4 py-3 border ${
                   errors.name ? "border-red-500" : "border-gray-300"
                 } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition`}
-                placeholder="John Doe"
+                placeholder="Enter your full name"
                 disabled={isLoading}
               />
               {errors.name && (
@@ -311,12 +315,11 @@ const onSubmitOtpHandler = async (e: FormEvent<HTMLFormElement>): Promise<void> 
                 type="email"
                 id="email"
                 name="email"
-                value={formData.email}
                 onChange={handleChange}
                 className={`w-full px-4 py-3 border ${
                   errors.email ? "border-red-500" : "border-gray-300"
                 } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition`}
-                placeholder="john@example.com"
+                placeholder="Enter your email address"
                 disabled={isLoading}
               />
               {errors.email && (
@@ -337,12 +340,11 @@ const onSubmitOtpHandler = async (e: FormEvent<HTMLFormElement>): Promise<void> 
                   type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
-                  value={formData.password}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 border ${
                     errors.password ? "border-red-500" : "border-gray-300"
                   } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition pr-12`}
-                  placeholder="••••••••"
+                  placeholder="Enter your password"
                   disabled={isLoading}
                 />
                 <button
@@ -390,79 +392,6 @@ const onSubmitOtpHandler = async (e: FormEvent<HTMLFormElement>): Promise<void> 
               </div>
               {errors.password && (
                 <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-              )}
-            </div>
-
-            {/* Confirm Password Field */}
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Confirm Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border ${
-                    errors.confirmPassword
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition pr-12`}
-                  placeholder="••••••••"
-                  disabled={isLoading}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  tabIndex={-1}
-                >
-                  {showConfirmPassword ? (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
-                      />
-                    </svg>
-                  )}
-                </button>
-              </div>
-              {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.confirmPassword}
-                </p>
               )}
             </div>
 
