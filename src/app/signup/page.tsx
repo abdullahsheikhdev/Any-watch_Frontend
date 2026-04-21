@@ -25,6 +25,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const inputRef = useRef<HTMLInputElement[]>([]);
+  const [authToken, setAuthToken] = useState<string>("");
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>): void => {
     const pasteData: string = e.clipboardData.getData("text");
@@ -38,7 +39,7 @@ export default function RegisterPage() {
   };
 
   const handleInput = (
-    e: React.InputEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>,
     index: number,
   ): void => {
     const value = e.currentTarget.value;
@@ -115,6 +116,7 @@ export default function RegisterPage() {
     setErrors({});
 
     try {
+      axios.defaults.withCredentials = true;
       const response = await axios.post<AuthResponse>(
         "http://localhost:4000/api/auth/register",
         formData,
@@ -123,17 +125,11 @@ export default function RegisterPage() {
       if (response.data.success) {
         console.log("Registration successful:", response.data);
 
-        // Optionally auto-login after registration
         if (response.data.token) {
-          localStorage.setItem("token", response.data.token);
-          if (response.data.user) {
-            localStorage.setItem("user", JSON.stringify(response.data.user));
-          }
-          router.push("/dashboard");
-        } else {
-          // Redirect to login page
-          setOtpSent(true);
+          setAuthToken(response.data.token);
         }
+
+        setOtpSent(true);
       }
     } catch (error: unknown) {
       console.error("Registration error:", error);
@@ -209,6 +205,7 @@ export default function RegisterPage() {
         {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
           },
           withCredentials: true, // ✅ Important: Send cookie with token
         },
@@ -262,7 +259,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 px-4 py-12">
       {!otpSent && (
         <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
           {/* Header */}
@@ -487,7 +484,7 @@ export default function RegisterPage() {
                   ref={(e: HTMLInputElement | null) => {
                     if (e) inputRef.current[index] = e;
                   }}
-                  onInput={(e) => handleInput(e, index)}
+                  onChange={(e) => handleInput(e, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                 />
               ))}

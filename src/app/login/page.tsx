@@ -53,6 +53,7 @@ export default function LoginPage() {
     }
   }
 
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     
@@ -64,6 +65,7 @@ export default function LoginPage() {
     setErrors({})
 
     try {
+      axios.defaults.withCredentials = true;
       const response = await axios.post<AuthResponse>('http://localhost:4000/api/auth/login', formData)
       
       if (response.data.success && response.data.token) {
@@ -78,7 +80,7 @@ export default function LoginPage() {
         console.log('Login successful:', response.data)
         
         // Redirect to dashboard
-        router.push('/public')
+        router.push('/')
       }
     } catch (error: unknown) {
       console.error('Login error:', error)
