@@ -18,8 +18,8 @@ export default function Navbar() {
   const pathname = usePathname()
 
   // Simulated user state - replace with actual auth
-  const [user, setUser] = useState<User | null>(null)
-  // const [user, setUser] = useState<User | null>({ name: 'John Doe', email: 'john@example.com' })
+  // const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null>({ name: 'John Doe', email: 'john@example.com' })
 
   const toggleMenu = () => setIsOpen(!isOpen)
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen)
