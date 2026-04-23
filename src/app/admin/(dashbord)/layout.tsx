@@ -10,9 +10,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <TopBar />
-        <div className="grid grid-cols-3">
+        <div className="grid grid-cols-5">
           <SideBar />
-          <div className="col-span-2">{children}</div>
+          <div className="col-span-4">{children}</div>
         </div>
       </body>
     </html>

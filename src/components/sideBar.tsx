@@ -1,7 +1,9 @@
 export default function SideBar () {
     return (
-        <main>
-            <h1>SideBar</h1>
-        </main>
+        <div className="h-screen px-5 bg-gray-800">
+            <div>
+
+            </div>
+        </div>
     )
 }
