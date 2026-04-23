@@ -3,6 +3,7 @@
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function AdminLogin() {
     const password = formData.get("password") as string;
 
     if (!email || !password) {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields");
       setIsLoading(false);
       return;
     }
@@ -37,13 +38,13 @@ export default function AdminLogin() {
           7 * 24 * 60 * 60
         }`;
         
-        alert("Login successful");
+        toast.success("Login successful");
         router.push("/admin");
       }
     } catch (error: unknown) {
       console.error("Login error:", error);
       const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || "An error occurred during login";
-      alert(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

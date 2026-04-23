@@ -1,14 +1,20 @@
-import SideBar from "@/components/sideBar"
+import TopBar from "@/components/admin/topBar";
+import SideBar from "@/components/sideBar";
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
-        <SideBar />
-      <body>{children}</body>
+      <body>
+        <TopBar />
+        <div className="grid grid-cols-3">
+          <SideBar />
+          <div className="col-span-2">{children}</div>
+        </div>
+      </body>
     </html>
-  )
+  );
 }

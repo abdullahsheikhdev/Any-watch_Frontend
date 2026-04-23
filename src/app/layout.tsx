@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Contrail_One, } from "next/font/google";
 import "./globals.css";
+import ToastProvider from "@/components/ToastProvider";
 
 const contrail = Contrail_One({
   subsets: ["latin"],
@@ -23,7 +24,10 @@ export default function RootLayout({
       lang="en"
       className={` ${contrail.variable} h-full antialiased`}
     >
-      <body className=" min-h-full flex flex-col">{children}
+      <body className=" min-h-full flex flex-col">
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );
