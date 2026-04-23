@@ -1,14 +1,52 @@
 "use client";
 
+import axiosInstance from "@/lib/axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function AdminLogin() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    if (!email || !password) {
+      alert("Please fill in all fields");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const { data } = await axiosInstance.post("/api/admin/login", {
+        email,
+        password,
+      });
+
+      if (data.token) {
+        // Save to localStorage for axios interceptor
+        localStorage.setItem("adminToken", data.token);
+        // Save to cookie for middleware
+        document.cookie = `adminToken=${data.token}; path=/; max-age=${
+          7 * 24 * 60 * 60
+        }`;
+        
+        alert("Login successful");
+        router.push("/admin");
+      }
+    } catch (error: unknown) {
+      console.error("Login error:", error);
+      const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || "An error occurred during login";
+      alert(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
