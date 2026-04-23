@@ -1,3 +1,5 @@
+import SideBar from "@/components/sideBar"
+
 export default function RootLayout({
   children,
 }: {
@@ -5,6 +7,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+        <SideBar />
       <body>{children}</body>
     </html>
   )
