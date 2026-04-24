@@ -46,7 +46,7 @@ export default function SideBar() {
   const pathname = usePathname();
 
   return (
-    <aside className="h-full bg-gray-800 text-white w-full border-r border-gray-700 shadow-xl relative">
+    <aside className="h-full bg-[#020617] text-white w-full border-r border-gray-700 shadow-xl relative">
       <div className="p-6">
         <h2 className="text-xl font-semibold text-gray-400 uppercase tracking-widest mb-8 px-4">
           Admin Panel
@@ -60,7 +60,7 @@ export default function SideBar() {
                 href={item.path}
                 className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 group ${
                   isActive
-                    ? "bg-[#F84565] text-white shadow-lg shadow-[#F84565]/30"
+                    ? "bg-[#181202] text-[#EAB308] shadow-lg border-r-4 border-[#EAB308]"
                     : "text-gray-400 hover:bg-gray-700/50 hover:text-white"
                 }`}
               >
@@ -72,9 +72,6 @@ export default function SideBar() {
                   {item.icon}
                 </div>
                 <span className="font-medium">{item.name}</span>
-                {isActive && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-                )}
               </Link>
             );
           })}
