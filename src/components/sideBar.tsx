@@ -47,11 +47,14 @@ export default function SideBar() {
 
   return (
     <aside className="h-full bg-[#020617] text-white w-full border-r border-gray-700 shadow-xl relative">
-      <div className="p-6">
-        <h2 className="text-xl font-semibold text-gray-400 uppercase tracking-widest mb-8 px-4">
+      <div className="md:p-6 p-2">
+        <h2 className="hidden md:block text-xl font-semibold text-gray-400 uppercase tracking-widest mb-8 md:px-4">
           Admin Panel
         </h2>
-        <nav className="space-y-2">
+        <h2 className="md:hidden max-w-20 text-center font-semibold text-gray-400 uppercase tracking-widest mb-8 md:px-4">
+          Admin Panel
+        </h2>
+        <nav className="space-y-2 hidden md:block">
           {navItems.map((item) => {
             const isActive = pathname === item.path;
             return (
@@ -72,6 +75,30 @@ export default function SideBar() {
                   {item.icon}
                 </div>
                 <span className="font-medium">{item.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
+        <nav className="space-y-2 md:hidden">
+          {navItems.map((item) => {
+            const isActive = pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`flex items-center justify-center py-2 rounded-xl transition-all duration-300 group ${
+                  isActive
+                    ? "bg-[#181202] text-[#EAB308] shadow-lg border-r-4 border-[#EAB308]"
+                    : "text-gray-400 hover:bg-gray-700/50 hover:text-white"
+                }`}
+              >
+                <div
+                  className={`transition-transform duration-300 ${
+                    isActive ? "scale-110" : "group-hover:scale-110"
+                  }`}
+                >
+                  {item.icon}
+                </div>
               </Link>
             );
           })}

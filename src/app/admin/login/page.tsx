@@ -51,18 +51,18 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 px-4">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center loginLiner from-blue-50 to-indigo-100 px-4">
+      <div className="bg-[#0F172A] p-8 rounded-xl shadow-lg w-full max-w-md">
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
+          <h2 className="text-4xl text-[#FFD165] font-bold mb-6 text-center">Admin Login</h2>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 ">
 
           {/* Email */}
           <div className="mb-4">
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-[#D3C5AC] mb-2"
             >
               Email Address
             </label>
@@ -70,7 +70,7 @@ export default function AdminLogin() {
               type="email"
               id="email"
               name="email"
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition`}
+              className={`w-full px-4 py-3 border text-[#D3C5AC] border-[#D3C5AC] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition`}
               placeholder="Enter your email"
             />
           </div>
@@ -79,7 +79,7 @@ export default function AdminLogin() {
           <div className="mb-6">
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-[#D3C5AC] mb-2"
             >
               Password
             </label>
@@ -88,7 +88,7 @@ export default function AdminLogin() {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition pr-12`}
+                className={`w-full px-4 py-3 border text-[#D3C5AC] border-[#D3C5AC] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition pr-12`}
                 placeholder="Enter your password"
               />
               <button
@@ -140,12 +140,12 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-medium disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full bg-[#FFD165] text-black py-3 rounded-lg hover:bg-[#D3C5AC] transition font-medium disabled:bg-[#D3C5AC] disabled:cursor-not-allowed flex items-center justify-center"
           >
             {isLoading ? (
               <>
                 <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-black"
                   fill="none"
                   viewBox="0 0 24 24"
                 >

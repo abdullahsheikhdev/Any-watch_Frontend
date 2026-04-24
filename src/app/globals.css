@@ -7,3 +7,6 @@
 .allLiner {
     background: linear-gradient(199deg, #9b8f8f 0%, #504747 85%);
 }
+.loginLiner {
+    background: linear-gradient(156deg, #080b2b 0%, #1d3b58 50%, #636f44 100%);
+}
