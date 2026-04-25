@@ -22,7 +22,7 @@ export async function uploadImage(formData: FormData): Promise<UploadResponse> {
     const response = await imagekit.upload({
       file: buffer,
       fileName: file.name,
-      folder: "Movies", 
+      folder: "/Movies", 
     });
 
     return { 

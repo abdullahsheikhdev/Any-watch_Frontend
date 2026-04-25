@@ -13,7 +13,10 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     (config) => {
     // Token add করুন
-    const token = localStorage.getItem('adminToken');
+    const adminToken = localStorage.getItem('adminToken');
+    const userToken = localStorage.getItem('token');
+    const token = adminToken || userToken;
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

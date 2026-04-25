@@ -33,10 +33,7 @@ export default function AdminLogin() {
       if (data.token) {
         // Save to localStorage for axios interceptor
         localStorage.setItem("adminToken", data.token);
-        // Save to cookie for middleware
-        document.cookie = `adminToken=${data.token}; path=/; max-age=${
-          7 * 24 * 60 * 60
-        }`;
+        // Note: adminToken is handled by the backend HttpOnly cookie
         
         toast.success("Login successful");
         router.push("/admin");
