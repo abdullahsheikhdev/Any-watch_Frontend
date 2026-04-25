@@ -94,16 +94,16 @@ export default function AddMovie() {
 
   return (
     <div className="bg-[#0F172A] text-white min-h-screen md:p-6 p-1">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-emerald-400">
+        <h1 className="text-3xl font-bold mb-6">
           Add New Movie
         </h1>
+      <div className="">
         
         <div className="bg-[#1e293b] border border-gray-700/50 md:p-8 p-2 rounded-2xl shadow-2xl backdrop-blur-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="md:col-span-3">
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-[#D3C5AC] mb-2">
                   Movie Title
                 </label>
                 <input
@@ -112,27 +112,28 @@ export default function AddMovie() {
                   value={movieData.title}
                   onChange={handleChange}
                   placeholder="e.g. Inception"
-                  className="w-full p-3 rounded-xl bg-[#0f172a] border border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
+                  className="w-full p-3 rounded-xl bg-[#0f172a] border border-[#D3C5AC] focus:border-gray-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
                   required
                 />
               </div>
               <div className="md:col-span-1">
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-[#D3C5AC] mb-2">
                   Release Date
                 </label>
                 <input
-                  type="date"
+                  type="number"
+                  placeholder="Enter The Release Date"
                   name="releaseDate"
                   value={movieData.releaseDate}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-xl bg-[#0f172a] border border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-gray-300"
+                  className="w-full p-3 rounded-xl bg-[#0f172a] border border-[#D3C5AC] focus:border-gray-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-gray-300"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">
+              <label className="block text-sm font-medium text-[#D3C5AC] mb-2">
                 Description
               </label>
               <textarea
@@ -141,21 +142,21 @@ export default function AddMovie() {
                 onChange={handleChange}
                 placeholder="Enter movie synopsis..."
                 rows={4}
-                className="w-full p-3 rounded-xl bg-[#0f172a] border border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none resize-none"
+                className="w-full p-3 rounded-xl bg-[#0f172a] border border-[#D3C5AC] focus:border-gray-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none resize-none"
                 required
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-[#D3C5AC] mb-2">
                   Rating
                 </label>
                 <select
                   name="rating"
                   value={movieData.rating}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-xl bg-[#0f172a] border border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-gray-300 appearance-none"
+                  className="w-full p-3 rounded-xl bg-[#0f172a] border border-[#D3C5AC] focus:border-gray-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-gray-300 appearance-none"
                   required
                 >
                   <option value="">Select Rating</option>
@@ -165,14 +166,14 @@ export default function AddMovie() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-[#D3C5AC] mb-2">
                   Category
                 </label>
                 <select
                   name="catagory"
                   value={movieData.catagory}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-xl bg-[#0f172a] border border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-gray-300 appearance-none"
+                  className="w-full p-3 rounded-xl bg-[#0f172a] border border-[#D3C5AC] focus:border-gray-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none text-gray-300 appearance-none"
                   required
                 >
                   <option value="">Select Category</option>
@@ -184,10 +185,10 @@ export default function AddMovie() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">
+              <label className="block text-sm font-medium text-[#D3C5AC] mb-2">
                 Movie Poster
               </label>
-              <div className="flex flex-col md:flex-row items-center gap-6 p-6 rounded-xl border-2 border-dashed border-gray-700 bg-[#0f172a]/50 hover:border-blue-500/50 transition-colors cursor-pointer group relative">
+              <div className="flex flex-col md:flex-row items-center gap-6 p-6 rounded-xl border-2 border-dashed border-[#D3C5AC] bg-[#0f172a]/50 hover:border-gray-500/50 transition-colors cursor-pointer group relative">
                 <input
                   type="file"
                   onChange={handleFileChange}
@@ -201,7 +202,7 @@ export default function AddMovie() {
                   <p className="text-xs text-gray-500 mt-1">PNG, JPG or WEBP (Max 5MB)</p>
                 </div>
                 {movieData.posterUrl && (
-                  <div className="relative w-24 h-32 rounded-lg overflow-hidden border border-gray-700 shadow-lg">
+                  <div className="relative w-24 h-32 rounded-lg overflow-hidden border border-[#D3C5AC] shadow-lg">
                     <Image
                       src={movieData.posterUrl}
                       alt="Poster Preview"
@@ -217,7 +218,7 @@ export default function AddMovie() {
               <button
                 type="submit"
                 disabled={loading || uploading}
-                className="w-full py-4 rounded-xl bg-linear-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white font-bold text-lg shadow-xl shadow-blue-500/20 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-4 rounded-xl bg-[#FFD165] hover:bg-[#D3C5AC] text-black font-bold text-lg shadow-xl shadow-blue-500/20 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
