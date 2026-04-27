@@ -16,7 +16,9 @@ export default function MovieList() {
     try {
       const response = await axiosInstance.get("/api/admin/all-movis");
       if (response.data.success) {
-        setMovies(response.data.data);
+        if(response.data.status === 'coming_soon') {
+          setMovies(response.data.data);
+        }
       }
     } catch (error) {
       console.error("Error fetching movies:", error);
@@ -61,7 +63,7 @@ export default function MovieList() {
 
   const formatDate = (date: string | number) => {
     if (!date) return "N/A";
-    // If it's just a year
+
     if (typeof date === "number" || (typeof date === "string" && date.length === 4 && !isNaN(Number(date)))) {
       return date.toString();
     }
@@ -75,7 +77,7 @@ export default function MovieList() {
 
   const renderStars = (rating: string) => {
     const r = parseFloat(rating);
-    const fullStars = Math.min(Math.floor(r / 2), 5); // Assuming 10 scale to 5 stars
+    const fullStars = Math.min(Math.floor(r / 2), 5);
     return (
       <div className="flex gap-1">
         {[...Array(5)].map((_, i) => (
@@ -102,13 +104,13 @@ export default function MovieList() {
 
   return (
     <div className="min-h-screen bg-[#0a0b1e] text-white p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold tracking-wider uppercase text-gray-400">Movie List</h1>
+          <h1 className="text-3xl font-bold tracking-wider uppercase">Movie List</h1>
         </div>
+      <div className="">
 
-        <div className="bg-[#121432] rounded-2xl overflow-hidden border border-gray-800 shadow-2xl">
-          <div className="overflow-x-auto">
+        <div className="bg-[#121432] rounded-2xl border border-gray-800 shadow-2xl">
+          <div className="">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-800 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-gray-500">
