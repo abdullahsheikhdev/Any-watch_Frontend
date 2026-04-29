@@ -253,7 +253,7 @@ const handleDelete = async (id: string, fileId?: string) => {
 
                         {/* Delete Button */}
                         <button
-                          onClick={() => handleDelete(movie._id)}
+                          onClick={() => handleDelete(movie._id, movie.imageFileId)}
                           className="p-2 rounded-full bg-[#1a1c40] hover:bg-red-600 transition-colors group/del"
                         >
                           <svg className="w-4 h-4 text-gray-400 group-hover/del:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -338,7 +338,7 @@ const handleDelete = async (id: string, fileId?: string) => {
 
                         {/* Delete Button */}
                         <button
-                          onClick={() => handleDelete(movie._id)}
+                          onClick={() => handleDelete(movie._id, movie.imageFileId)}
                           className="p-2 rounded-full bg-[#1a1c40] hover:bg-red-600 transition-colors group/del"
                         >
                           <svg className="w-4 h-4 text-gray-400 group-hover/del:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -27,6 +27,7 @@ export default function AddMovie() {
     catagory: "",
     releaseDate: "",
     posterUrl: "",
+    imageFileId: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -45,7 +46,11 @@ export default function AddMovie() {
     try {
       const result = await uploadImage(formData);
       if (result.success && result.url) {
-        setMovieData((prev) => ({ ...prev, posterUrl: result.url as string }));
+        setMovieData((prev) => ({ 
+          ...prev, 
+          posterUrl: result.url as string,
+          imageFileId: result.fileId as string || ""
+        }));
         toast.success("Poster uploaded successfully!");
       } else {
         toast.error(result.error || "Upload failed");
