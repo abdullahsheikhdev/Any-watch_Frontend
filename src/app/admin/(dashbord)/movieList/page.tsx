@@ -5,6 +5,7 @@ import Image from "next/image";
 import axiosInstance from "@/lib/axios";
 import { toast } from "react-toastify";
 import { Movie } from "@/@types/movieslist";
+import { deleteImageAction } from "@/app/actions/deleteAction";
 
 
 export default function MovieList() {
@@ -84,21 +85,33 @@ const handleUpdateStatus = async (id: string, status: "coming_soon" | "available
 
 
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this movie?")) return;
+const handleDelete = async (id: string, fileId?: string) => {
+  if (!confirm("Are you sure you want to delete this movie?")) return;
 
-    try {
-      const response = await axiosInstance.delete(`/api/admin/delete-movie/${id}`);
-      if (response.data.success) {
-        toast.success("Movie deleted successfully");
-        setMovies((prev) => prev.filter((movie) => movie._id !== id));
-        setAvailableMovies((prev) => prev.filter((movie) => movie._id !== id));
+  try {
+    if (fileId) {
+      const ikResponse = await deleteImageAction(fileId);
+      if (!ikResponse.success) {
+        console.error("ImageKit delete failed:", ikResponse.error);
+      } else {
+        console.log("Image deleted from ImageKit successfully");
       }
-    } catch (error) {
-      console.error("Delete error:", error);
-      toast.error("Failed to delete movie");
     }
-  };
+
+    const response = await axiosInstance.delete(`/api/admin/delete-movie/${id}`);
+    
+    if (response.data.success) {
+      toast.success("Movie and image deleted successfully");
+      
+      // স্টেট আপডেট
+      setMovies((prev) => prev.filter((movie) => movie._id !== id));
+      setAvailableMovies((prev) => prev.filter((movie) => movie._id !== id));
+    }
+  } catch (error) {
+    console.error("Delete error:", error);
+    toast.error("Failed to delete movie");
+  }
+};
 
 
 

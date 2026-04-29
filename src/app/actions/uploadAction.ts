@@ -17,7 +17,7 @@ export async function uploadImage(formData: FormData): Promise<UploadResponse> {
       return { success: false, error: "No file uploaded or file is empty" };
     }
 
-    // Check file type
+
     if (!file.type.startsWith("image/")) {
       console.error("Upload Error: Invalid file type", file.type);
       return { success: false, error: "Invalid file type. Please upload an image." };
