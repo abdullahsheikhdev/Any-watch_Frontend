@@ -163,9 +163,9 @@ const handleDelete = async (id: string, fileId?: string) => {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold tracking-wider uppercase">Movie List</h1>
         </div>
-      <div className="p-5">
-        <h4 className="text-xl mb-5">Up Coming movies List</h4>
-        <div className="bg-[#121432] rounded-2xl border border-gray-800 shadow-2xl">
+      <div className="mb-5">
+        <h4 className="text-xl mb-5 px-5">Up Coming movies List</h4>
+        <div className="bg-[#121432] rounded-2xl border border-gray-800 shadow-2xl w-full overflow-x-auto">
           <div className="">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -276,9 +276,9 @@ const handleDelete = async (id: string, fileId?: string) => {
       </div>
 
 
-      <div className="p-5">
-        <h4 className="text-xl mb-5">Available movies List</h4>
-        <div className="bg-[#121432] rounded-2xl border border-gray-800 shadow-2xl">
+      <div className="">
+        <h4 className="text-xl mb-5 px-5">Available movies List</h4>
+        <div className="bg-[#121432] rounded-2xl border border-gray-800 shadow-2xl w-full overflow-x-auto">
           <div className="">
             <table className="w-full text-left border-collapse">
               <thead>
