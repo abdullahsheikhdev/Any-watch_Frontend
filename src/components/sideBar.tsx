@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Icones } from "@/components/icons/index"
 
 const navItems = [
   {
@@ -65,7 +64,37 @@ const navItems = [
   {
     name: "Shows",
     path: "/admin/shows",
-    icon: <Icones name="show" className="w-6 h-6" />
+    icon: (
+      <svg
+        className="w-6 h-6"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+        <circle cx="5" cy="2" r="1" />
+        <circle cx="19" cy="2" r="1" />
+        <line x1="5" y1="2" x2="10.5" y2="5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="19" y1="2" x2="13.5" y2="5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        
+        <mask id="tv-mask">
+          <rect width="24" height="24" fill="white" />
+          <rect x="3.5" y="7.5" width="11" height="13.5" rx="1.5" fill="black" />
+          <rect x="16" y="7.5" width="5" height="1.5" rx="0.75" fill="black" />
+          <rect x="16" y="10" width="5" height="1.5" rx="0.75" fill="black" />
+          <rect x="16" y="12.5" width="5" height="1.5" rx="0.75" fill="black" />
+          <rect x="16" y="15" width="5" height="1.5" rx="0.75" fill="black" />
+          <circle cx="18.5" cy="18.5" r="1.5" fill="black" />
+          <circle cx="18.5" cy="22" r="1.5" fill="black" />
+        </mask>
+
+        <g mask="url(#tv-mask)">
+          <rect x="8.5" y="4.5" width="7" height="3" rx="1" />
+          <rect x="2" y="5.5" width="20" height="18.5" rx="3" />
+        </g>
+        
+        <line x1="17.5" y1="17.5" x2="19.5" y2="19.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="17.5" y1="21" x2="19.5" y2="23" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
   },
   {
     name: "Booking List",
