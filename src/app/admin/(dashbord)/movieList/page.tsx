@@ -14,42 +14,42 @@ export default function MovieList() {
   const [loading, setLoading] = useState(true);
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
-  const fetchMovies = async () => {
-    try {
-      const response = await axiosInstance.get("/api/admin/all-movis");
-      if (response.data.success) {
-        const comingSoonMovies = response.data.data.filter(
-        (movie: Movie) => movie.status === 'coming_soon'
-      );
-      setMovies(comingSoonMovies)
-      }
-    } catch (error) {
-      console.error("Error fetching movies:", error);
-      toast.error("Failed to fetch movies");
-    } finally {
-      setLoading(false);
-    }
-  };
-  const fetchAvailableMovies = async () => {
-    try {
-      const response = await axiosInstance.get("/api/admin/all-movis");
-      if (response.data.success) {
-        const available = response.data.data.filter(
-          (movie: Movie) => movie.status === 'available'
-        );
-        setAvailableMovies(available);
-      }
-    } catch (error) {
-      console.error("Error fetching available movies:", error);
-      toast.error("Failed to fetch available movies");
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    let isMounted = true;
 
- useEffect(() => {
-    fetchMovies();
-    fetchAvailableMovies();
+    const fetchAllMovies = async () => {
+      try {
+        const response = await axiosInstance.get("/api/admin/all-movies");
+        if (!isMounted) return;
+
+        if (response.data.success) {
+          const allMovies = response.data.data as Movie[];
+          const comingSoonMovies = allMovies.filter(
+            (movie) => movie.status === "coming_soon"
+          );
+          const available = allMovies.filter(
+            (movie) => movie.status === "available"
+          );
+          setMovies(comingSoonMovies);
+          setAvailableMovies(available);
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error("Error fetching movies:", error);
+          toast.error("Failed to fetch movies");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void Promise.resolve().then(fetchAllMovies);
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
 const handleUpdateStatus = async (id: string, status: "coming_soon" | "available") => {
@@ -161,7 +161,7 @@ const handleDelete = async (id: string, fileId?: string) => {
   return (
     <div className="min-h-screen bg-[#0a0b1e] text-white p-4 md:p-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold tracking-wider uppercase">Movie List</h1>
+          <h1 className="text-3xl font-bold tracking-wider">Movie List</h1>
         </div>
       <div className="mb-5">
         <h4 className="text-xl mb-5 px-5">Up Coming movies List</h4>
