@@ -12,6 +12,13 @@ export default function AddShows() {
   const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  // Show configuration states
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [ticketPrice, setTicketPrice] = useState("");
+  const [hallNumber, setHallNumber] = useState("");
+  const [publishing, setPublishing] = useState(false);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -46,7 +53,68 @@ export default function AddShows() {
   }, []);
 
   const handleSelectMovie = (movieId: string) => {
-    setSelectedMovieId((prevId) => (prevId === movieId ? null : movieId));
+    setSelectedMovieId((prevId) => {
+      const nextId = prevId === movieId ? null : movieId;
+      // Reset inputs when selected movie changes or is cleared
+      setDate("");
+      setTime("");
+      setTicketPrice("");
+      setHallNumber("");
+      return nextId;
+    });
+  };
+
+  const handlePublishShow = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedMovieId) {
+      toast.error("Please select a movie first");
+      return;
+    }
+    if (!date) {
+      toast.error("Please select a date for the show");
+      return;
+    }
+    if (!time) {
+      toast.error("Please select a time for the show");
+      return;
+    }
+    if (!ticketPrice || isNaN(Number(ticketPrice)) || Number(ticketPrice) <= 0) {
+      toast.error("Please enter a valid ticket price");
+      return;
+    }
+    if (!hallNumber.trim()) {
+      toast.error("Please specify a movie hall number");
+      return;
+    }
+
+    setPublishing(true);
+    try {
+      const response = await axiosInstance.post("/api/admin/add-show", {
+        movieId: selectedMovieId,
+        date,
+        time,
+        ticketPrice: Number(ticketPrice),
+        hallNumber: hallNumber.trim(),
+      });
+
+      if (response.data.success) {
+        toast.success(response.data.message || "Show published successfully!");
+        // Clear form state
+        setDate("");
+        setTime("");
+        setTicketPrice("");
+        setHallNumber("");
+        setSelectedMovieId(null);
+      } else {
+        toast.error(response.data.message || "Failed to publish show");
+      }
+    } catch (error: any) {
+      console.error("Error publishing show:", error);
+      const msg = error.response?.data?.message || "Error publishing show. Please try again.";
+      toast.error(msg);
+    } finally {
+      setPublishing(false);
+    }
   };
 
   const scroll = (direction: "left" | "right") => {
@@ -261,24 +329,140 @@ export default function AddShows() {
                 </span>
               </div>
 
-              {/* Show Setup Area Placeholder */}
-              <div className="mt-8 pt-6 border-t border-gray-800">
-                <h3 className="text-lg font-bold mb-4">Configure Show Slots</h3>
-                <p className="text-sm text-gray-400">
-                  Ready to schedule showtimes for <span className="font-semibold text-white">{selectedMovie.title}</span>.
-                </p>
-                <div className="mt-4 flex gap-4">
-                  <button className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold text-sm tracking-wide transition-all shadow-lg active:scale-95">
-                    Add Showtime Slot
+              {/* Show Setup Form */}
+              <form onSubmit={handlePublishShow} className="mt-8 pt-6 border-t border-gray-800/80">
+                <h3 className="text-xl font-bold mb-6 text-gray-100 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[#EAB308]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                  </svg>
+                  Configure Show details
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  {/* Date Input */}
+                  <div className="space-y-2">
+                    <label htmlFor="showDate" className="text-xs md:text-sm font-semibold text-gray-300 block tracking-wide uppercase">
+                      Show Date
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <input
+                        type="date"
+                        id="showDate"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        required
+                        className="w-full pl-10 pr-4 py-3 bg-[#0a0b1e]/60 border border-gray-800/80 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EAB308] focus:ring-1 focus:ring-[#EAB308]/20 transition-all duration-300 text-sm [color-scheme:dark]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Time Input */}
+                  <div className="space-y-2">
+                    <label htmlFor="showTime" className="text-xs md:text-sm font-semibold text-gray-300 block tracking-wide uppercase">
+                      Show Time
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <input
+                        type="time"
+                        id="showTime"
+                        value={time}
+                        onChange={(e) => setTime(e.target.value)}
+                        required
+                        className="w-full pl-10 pr-4 py-3 bg-[#0a0b1e]/60 border border-gray-800/80 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EAB308] focus:ring-1 focus:ring-[#EAB308]/20 transition-all duration-300 text-sm [color-scheme:dark]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Ticket Price Input */}
+                  <div className="space-y-2">
+                    <label htmlFor="ticketPrice" className="text-xs md:text-sm font-semibold text-gray-300 block tracking-wide uppercase">
+                      Ticket Price
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                        <span className="text-gray-500 font-semibold">$</span>
+                      </div>
+                      <input
+                        type="number"
+                        id="ticketPrice"
+                        min="1"
+                        step="any"
+                        placeholder="0.00"
+                        value={ticketPrice}
+                        onChange={(e) => setTicketPrice(e.target.value)}
+                        required
+                        className="w-full pl-8 pr-4 py-3 bg-[#0a0b1e]/60 border border-gray-800/80 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EAB308] focus:ring-1 focus:ring-[#EAB308]/20 transition-all duration-300 text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Movie Hall Number Input */}
+                  <div className="space-y-2">
+                    <label htmlFor="hallNumber" className="text-xs md:text-sm font-semibold text-gray-300 block tracking-wide uppercase">
+                      Movie Hall Number
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                      </div>
+                      <input
+                        type="text"
+                        id="hallNumber"
+                        placeholder="e.g. Hall 1 or Premium Screen"
+                        value={hallNumber}
+                        onChange={(e) => setHallNumber(e.target.value)}
+                        required
+                        className="w-full pl-10 pr-4 py-3 bg-[#0a0b1e]/60 border border-gray-800/80 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EAB308] focus:ring-1 focus:ring-[#EAB308]/20 transition-all duration-300 text-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-4 mt-8">
+                  <button
+                    type="submit"
+                    disabled={publishing}
+                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 font-bold text-sm tracking-wider uppercase transition-all duration-300 shadow-[0_4px_20px_rgba(59,130,246,0.3)] hover:shadow-[0_4px_25px_rgba(59,130,246,0.5)] active:scale-95 text-white disabled:opacity-50 disabled:pointer-events-none flex items-center gap-2.5"
+                  >
+                    {publishing ? (
+                      <>
+                        <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        Publishing...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Publish Show
+                      </>
+                    )}
                   </button>
                   <button
+                    type="button"
                     onClick={() => setSelectedMovieId(null)}
-                    className="px-6 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 font-bold text-sm tracking-wide transition-all active:scale-95 text-gray-300"
+                    disabled={publishing}
+                    className="px-6 py-3 rounded-xl bg-[#1e204a]/60 hover:bg-[#1e204a]/90 font-bold text-sm tracking-wider uppercase transition-all active:scale-95 text-gray-300 border border-gray-800 disabled:opacity-50"
                   >
-                    Deselect
+                    Cancel / Deselect
                   </button>
                 </div>
-              </div>
+              </form>
             </div>
 
             {/* Micro details panel */}
