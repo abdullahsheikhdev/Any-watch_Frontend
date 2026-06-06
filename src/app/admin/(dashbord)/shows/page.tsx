@@ -169,7 +169,7 @@ export default function AddShows() {
       {/* Title Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">
+          <h1 className="text-3xl font-bold tracking-wider text-transparent bg-clip-text bg-linear-to-r from-white to-gray-400">
             Show Management
           </h1>
           <p className="text-xs md:text-sm text-gray-400 mt-1">
@@ -254,7 +254,7 @@ export default function AddShows() {
                       }`}
                     />
                     {/* Shadow Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+                    <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent"></div>
 
                     {/* Selected Badge */}
                     {isSelected && (
@@ -356,7 +356,7 @@ export default function AddShows() {
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
                         required
-                        className="w-full pl-10 pr-4 py-3 bg-[#0a0b1e]/60 border border-gray-800/80 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EAB308] focus:ring-1 focus:ring-[#EAB308]/20 transition-all duration-300 text-sm [color-scheme:dark]"
+                        className="w-full pl-10 pr-4 py-3 bg-[#0a0b1e]/60 border border-gray-800/80 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EAB308] focus:ring-1 focus:ring-[#EAB308]/20 transition-all duration-300 text-sm scheme-dark"
                       />
                     </div>
                   </div>
@@ -378,7 +378,7 @@ export default function AddShows() {
                         value={time}
                         onChange={(e) => setTime(e.target.value)}
                         required
-                        className="w-full pl-10 pr-4 py-3 bg-[#0a0b1e]/60 border border-gray-800/80 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EAB308] focus:ring-1 focus:ring-[#EAB308]/20 transition-all duration-300 text-sm [color-scheme:dark]"
+                        className="w-full pl-10 pr-4 py-3 bg-[#0a0b1e]/60 border border-gray-800/80 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#EAB308] focus:ring-1 focus:ring-[#EAB308]/20 transition-all duration-300 text-sm scheme-dark"
                       />
                     </div>
                   </div>
@@ -434,7 +434,7 @@ export default function AddShows() {
                   <button
                     type="submit"
                     disabled={publishing}
-                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 font-bold text-sm tracking-wider uppercase transition-all duration-300 shadow-[0_4px_20px_rgba(59,130,246,0.3)] hover:shadow-[0_4px_25px_rgba(59,130,246,0.5)] active:scale-95 text-white disabled:opacity-50 disabled:pointer-events-none flex items-center gap-2.5"
+                    className="px-8 py-3 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 font-bold text-sm tracking-wider uppercase transition-all duration-300 shadow-[0_4px_20px_rgba(59,130,246,0.3)] hover:shadow-[0_4px_25px_rgba(59,130,246,0.5)] active:scale-95 text-white disabled:opacity-50 disabled:pointer-events-none flex items-center gap-2.5"
                   >
                     {publishing ? (
                       <>
@@ -459,7 +459,7 @@ export default function AddShows() {
                     disabled={publishing}
                     className="px-6 py-3 rounded-xl bg-[#1e204a]/60 hover:bg-[#1e204a]/90 font-bold text-sm tracking-wider uppercase transition-all active:scale-95 text-gray-300 border border-gray-800 disabled:opacity-50"
                   >
-                    Cancel / Deselect
+                    Cancel
                   </button>
                 </div>
               </form>
