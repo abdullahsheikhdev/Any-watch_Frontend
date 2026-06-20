@@ -217,6 +217,13 @@ export default function RegisterPage() {
         inputRef.current.forEach((input) => {
           if (input) input.value = "";
         });
+
+        // Store session
+        localStorage.setItem('token', authToken);
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
+
         // Redirect to home
         router.push("/");
       } else {

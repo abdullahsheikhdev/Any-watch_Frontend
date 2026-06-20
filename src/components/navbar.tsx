@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import type { NavLink, User } from '@/@types/navbar'
+import axiosInstance from '@/lib/axios'
 
 const navLinks: NavLink[] = [
   { name: 'Home', href: '/' },
@@ -13,21 +14,62 @@ const navLinks: NavLink[] = [
 ]
 
 export default function Navbar() {
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const pathname = usePathname()
 
-  // Simulated user state - replace with actual auth
-  // const [user, setUser] = useState<User | null>(null)
-  const [user, setUser] = useState<User | null>({ name: 'John Doe', email: 'john@example.com' })
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    // Read user from localStorage on mount
+    const savedUser = localStorage.getItem('user')
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser))
+      } catch (e) {
+        console.error('Error parsing user session:', e)
+      }
+    }
+
+    // Refresh profile state from server to keep verified status in sync
+    const checkProfile = async () => {
+      try {
+        const { data } = await axiosInstance.get('/api/user/profile')
+        if (data.success && data.user) {
+          setUser(data.user)
+          localStorage.setItem('user', JSON.stringify(data.user))
+        }
+      } catch (err) {
+        console.error('Profile verification failed:', err)
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        setUser(null)
+      }
+    }
+
+    const token = localStorage.getItem('token')
+    if (token) {
+      checkProfile()
+    }
+  }, [pathname])
 
   const toggleMenu = () => setIsOpen(!isOpen)
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen)
   const isActive = (path: string): boolean => pathname === path
 
-  const handleLogout = () => {
-    setUser(null)
-    setIsUserMenuOpen(false)
+  const handleLogout = async () => {
+    try {
+      await axiosInstance.post('/api/auth/logout')
+    } catch (e) {
+      console.error('Logout error:', e)
+    } finally {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      setUser(null)
+      setIsUserMenuOpen(false)
+      router.push('/login')
+    }
   }
 
   return (

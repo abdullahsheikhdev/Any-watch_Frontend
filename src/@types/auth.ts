@@ -39,6 +39,11 @@ export interface VerifyEmailResponse {
   success: boolean;
   message: string;
   expired?: boolean;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }
 
 export interface ErrorResponse {
