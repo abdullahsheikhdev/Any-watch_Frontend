@@ -4,17 +4,9 @@ import React, { useState, useEffect } from 'react'
 import axiosInstance from '@/lib/axios'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Movie } from '@/@types/movieslist'
 
-interface Movie {
-  _id: string
-  title: string
-  description: string
-  posterUrl: string
-  rating: string
-  catagory: any // Can be object, array, or string in the DB
-  status: 'available' | 'coming_soon'
-  releaseDate?: string
-}
+
 
 
 export default function Home() {
