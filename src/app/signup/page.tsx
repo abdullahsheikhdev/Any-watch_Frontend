@@ -470,7 +470,7 @@ export default function RegisterPage() {
       {otpSent && (
         <form
           onSubmit={onSubmitOtpHandler}
-          className="bg-purple-400 p-16 text-white rounded-2xl"
+          className="bg-gray-600 p-16 text-white rounded-2xl"
         >
           <h1 className="text-3xl font-bold text-white text-center">
             Email Verification

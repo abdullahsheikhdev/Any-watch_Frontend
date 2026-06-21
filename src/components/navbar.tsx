@@ -23,16 +23,23 @@ export default function Navbar() {
 
   useEffect(() => {
     // Read user from localStorage on mount
-    const savedUser = localStorage.getItem('user')
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser))
-      } catch (e) {
-        console.error('Error parsing user session:', e)
+    const loadUser = () => {
+      const savedUser = localStorage.getItem('user')
+      if (savedUser) {
+        try {
+          setUser(JSON.parse(savedUser))
+        } catch (e) {
+          console.error('Error parsing user session:', e)
+        }
+      } else {
+        setUser(null)
       }
     }
 
-    // Refresh profile state from server to keep verified status in sync
+    loadUser()
+
+    // Refresh profile state from server to keep verified status in sync.
+    // Only clear session on true 401 (token invalid/expired), not on network errors.
     const checkProfile = async () => {
       try {
         const { data } = await axiosInstance.get('/api/user/profile')
@@ -40,11 +47,14 @@ export default function Navbar() {
           setUser(data.user)
           localStorage.setItem('user', JSON.stringify(data.user))
         }
-      } catch (err) {
-        console.error('Profile verification failed:', err)
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        setUser(null)
+      } catch (err: any) {
+        if (err?.response?.status === 401) {
+          // Token is genuinely invalid — clear session
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+          setUser(null)
+        }
+        // On network/server errors, keep existing session intact
       }
     }
 
@@ -52,6 +62,11 @@ export default function Navbar() {
     if (token) {
       checkProfile()
     }
+
+    // Listen for storage events (e.g. login from another tab or router.refresh)
+    const handleStorageChange = () => loadUser()
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
   }, [pathname])
 
   const toggleMenu = () => setIsOpen(!isOpen)
