@@ -1,6 +1,7 @@
 export interface Movie {
   _id: string;
   title: string;
+  description: string;
   posterUrl: string;
   imageFileId?: string;
   catagory: string; // Backend uses 'catagory'

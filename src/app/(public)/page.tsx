@@ -30,7 +30,7 @@ export default function Home() {
   }, [])
 
   // Helper to parse categories cleanly
-  const renderCategories = (cat: any) => {
+  const renderCategories = (cat: string | string[] | Record<string, unknown>) => {
     if (Array.isArray(cat)) return cat.slice(0, 3)
     if (typeof cat === 'object' && cat !== null) {
       return Object.values(cat).slice(0, 3)
