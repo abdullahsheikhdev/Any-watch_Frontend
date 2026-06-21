@@ -47,14 +47,8 @@ export default function Navbar() {
           setUser(data.user)
           localStorage.setItem('user', JSON.stringify(data.user))
         }
-      } catch (err: any) {
-        if (err?.response?.status === 401) {
-          // Token is genuinely invalid — clear session
-          localStorage.removeItem('token')
-          localStorage.removeItem('user')
-          setUser(null)
-        }
-        // On network/server errors, keep existing session intact
+      } catch (error) {
+        console.error('Error fetching user profile:', error)
       }
     }
 
