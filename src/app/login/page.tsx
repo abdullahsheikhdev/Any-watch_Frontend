@@ -27,7 +27,7 @@ export default function LoginPage() {
   const [showOtpInput, setShowOtpInput] = useState(false)
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [pendingToken, setPendingToken] = useState('')
-  const [pendingUser, setPendingUser] = useState<any>(null)
+  const [pendingUser, setPendingUser] = useState(null)
   const [isVerifying, setIsVerifying] = useState(false)
   const otpRefs = useRef<(HTMLInputElement | null)[]>([])
 
@@ -151,7 +151,7 @@ export default function LoginPage() {
       const data = await response.json()
 
       if (data.success) {
-        const updatedUser = { ...pendingUser, isVerified: true, ...data.user }
+        const updatedUser = { ...pendingUser || {} , isVerified: true, ...data.user }
         localStorage.setItem('token', pendingToken)
         localStorage.setItem('user', JSON.stringify(updatedUser))
         router.push('/')
