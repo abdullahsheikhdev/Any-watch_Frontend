@@ -4,14 +4,9 @@ import React, { useState, FormEvent, ChangeEvent, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
+import axiosInstance from '@/lib/axios'
+import type { FormErrors } from '@/@types/auth'
 
-interface FormErrors {
-  email?: string
-  otp?: string
-  password?: string
-  confirmPassword?: string
-  general?: string
-}
 
 export default function ForgotPasswordPage() {
   const router = useRouter()
@@ -76,7 +71,7 @@ export default function ForgotPasswordPage() {
     setErrors({})
 
     try {
-      const response = await axios.post('http://localhost:4000/api/auth/password-reset-otp', { email })
+      const response = await axiosInstance.post('/api/auth/password-reset-otp', { email })
       if (response.data.success) {
         setStage('reset')
       } else {
@@ -132,7 +127,7 @@ export default function ForgotPasswordPage() {
     setErrors({})
 
     try {
-      const response = await axios.post('http://localhost:4000/api/auth/reset-password', {
+      const response = await axiosInstance.post('/api/auth/reset-password', {
         email,
         otp,
         newPassword

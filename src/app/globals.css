@@ -10,3 +10,17 @@
 .loginLiner {
     background: linear-gradient(156deg, #080b2b 0%, #1d3b58 50%, #636f44 100%);
 }
+
+@layer utilities {
+  /* Chrome, Safari, Edge, Opera */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}

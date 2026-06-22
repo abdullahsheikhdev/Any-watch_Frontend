@@ -13,6 +13,7 @@ export interface RegisterFormData {
 export interface FormErrors {
   name?: string
   email?: string
+  otp?: string
   password?: string
   confirmPassword?: string
   general?: string
