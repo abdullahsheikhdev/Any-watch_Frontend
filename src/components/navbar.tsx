@@ -77,7 +77,7 @@ export default function Navbar() {
       localStorage.removeItem('user')
       setUser(null)
       setIsUserMenuOpen(false)
-      router.push('/login')
+      router.push('/')
     }
   }
 
@@ -153,7 +153,7 @@ export default function Navbar() {
                     href="/login"
                     className="px-4 py-2 rounded-md text-sm font-medium border border-gray-600 hover:border-gray-500 hover:bg-gray-700 transition"
                   >
-                    Login
+                    Sign In
                   </Link>
                   <Link
                     href="/signup"
@@ -244,7 +244,7 @@ export default function Navbar() {
                     className="block px-3 py-2 rounded-md text-base font-medium border border-gray-600 hover:bg-gray-700 text-center"
                     onClick={() => setIsOpen(false)}
                   >
-                    Login
+                    Sign In
                   </Link>
                   <Link
                     href="/signup"
