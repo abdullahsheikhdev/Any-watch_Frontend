@@ -136,13 +136,6 @@ export default function Navbar() {
                       >
                         Profile
                       </Link>
-                      <Link
-                        href="/settings"
-                        className="block px-4 py-2 text-sm hover:bg-gray-600"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        Settings
-                      </Link>
                       <hr className="border-gray-600 my-1" />
                       <button
                         onClick={handleLogout}
