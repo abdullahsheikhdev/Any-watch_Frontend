@@ -212,6 +212,7 @@ export default function Home() {
                     <Image 
                       src={movie.posterUrl} 
                       alt={movie.title} 
+                      fill
                       className="object-cover w-full h-full transform group-hover:scale-105 transition duration-500" 
                       loading="lazy"
                     />
