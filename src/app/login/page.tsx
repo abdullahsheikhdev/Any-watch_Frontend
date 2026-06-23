@@ -3,18 +3,8 @@
 import React, { useState, FormEvent, ChangeEvent, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-
-interface LoginFormData {
-  email: string
-  password: string
-}
-
-interface FormErrors {
-  email?: string
-  password?: string
-  general?: string
-  otp?: string
-}
+import type { LoginFormData, FormErrors } from '@/@types/auth'
+import axiosInstance from '@/lib/axios'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -61,38 +51,32 @@ export default function LoginPage() {
 
     setIsLoading(true)
     setErrors({})
+    console.log("form data is:", formData)
 
     try {
-      const response = await fetch('http://localhost:4000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(formData),
-      })
+      const responce = await axiosInstance.post('/api/auth/login', formData, { withCredentials: true })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        setErrors({ general: data.message || 'Invalid email or password' })
+      if (!responce.data.success) {
+        setErrors({ general: responce.data.message || 'Invalid email or password' })
         return
       }
 
-      if (data.success && data.token) {
+      if (responce.data.success && responce.data.token) {
         // User not verified — show OTP screen
-        if (data.user && !data.user.isVerified) {
-          setPendingToken(data.token)
-          setPendingUser(data.user)
+        if (responce.data.user && !responce.data.user.isVerified) {
+          setPendingToken(responce.data.token)
+          setPendingUser(responce.data.user)
           setShowOtpInput(true)
           return
         }
 
         // Fully verified — save and redirect
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('user', JSON.stringify(data.user))
+        localStorage.setItem('token', responce.data.token)
+        localStorage.setItem('user', JSON.stringify(responce.data.user))
         router.push('/')
         router.refresh()
       } else {
-        setErrors({ general: data.message || 'Login failed. Please try again.' })
+        setErrors({ general: responce.data.message || 'Login failed. Please try again.' })
       }
     } catch (err) {
       console.error('Login fetch error:', err)
@@ -138,26 +122,16 @@ export default function LoginPage() {
     setErrors({})
 
     try {
-      const response = await fetch('http://localhost:4000/api/auth/verify-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${pendingToken}`,
-        },
-        credentials: 'include',
-        body: JSON.stringify({ code: otpCode }),
-      })
+      const responce = await axiosInstance.post('/api/auth/verify-email', { code: otpCode }, { headers: { Authorization: `Bearer ${pendingToken}` }, withCredentials: true })
 
-      const data = await response.json()
-
-      if (data.success) {
-        const updatedUser = { ...pendingUser || {} , isVerified: true, ...data.user }
+      if (responce.data.success) {
+        const updatedUser = { ...pendingUser || {}, isVerified: true, ...responce.data.user }
         localStorage.setItem('token', pendingToken)
         localStorage.setItem('user', JSON.stringify(updatedUser))
         router.push('/')
         router.refresh()
       } else {
-        setErrors({ otp: data.message || 'Invalid verification code' })
+        setErrors({ otp: responce.data.message || 'Invalid verification code' })
       }
     } catch (err) {
       console.error('OTP verify error:', err)
@@ -169,11 +143,14 @@ export default function LoginPage() {
 
   const handleResendOtp = async () => {
     try {
-      await fetch('http://localhost:4000/api/auth/resend-verification-code', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${pendingToken}` },
-        credentials: 'include',
-      })
+      await axiosInstance.post(
+        '/api/auth/resend-verification-code',
+        {},
+        {
+          headers: { Authorization: `Bearer ${pendingToken}` },
+          withCredentials: true
+        }
+      )
       setErrors({ otp: '' })
       setOtp(['', '', '', '', '', ''])
       otpRefs.current[0]?.focus()
@@ -226,9 +203,8 @@ export default function LoginPage() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 bg-gray-800 border ${
-                        errors.email ? 'border-red-500' : 'border-gray-700'
-                      } rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-[#F84565]/50 focus:border-[#F84565] outline-none transition`}
+                      className={`w-full px-4 py-3 bg-gray-800 border ${errors.email ? 'border-red-500' : 'border-gray-700'
+                        } rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-[#F84565]/50 focus:border-[#F84565] outline-none transition`}
                       placeholder="you@example.com"
                       disabled={isLoading}
                       autoComplete="email"
@@ -248,9 +224,8 @@ export default function LoginPage() {
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-gray-800 border ${
-                          errors.password ? 'border-red-500' : 'border-gray-700'
-                        } rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-[#F84565]/50 focus:border-[#F84565] outline-none transition pr-12`}
+                        className={`w-full px-4 py-3 bg-gray-800 border ${errors.password ? 'border-red-500' : 'border-gray-700'
+                          } rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-[#F84565]/50 focus:border-[#F84565] outline-none transition pr-12`}
                         placeholder="••••••••"
                         disabled={isLoading}
                         autoComplete="current-password"
@@ -388,7 +363,7 @@ export default function LoginPage() {
                     </button>
                   </p>
                   <button
-                    onClick={() => { setShowOtpInput(false); setOtp(['','','','','','']); setErrors({}) }}
+                    onClick={() => { setShowOtpInput(false); setOtp(['', '', '', '', '', '']); setErrors({}) }}
                     className="text-xs text-gray-600 hover:text-gray-400 transition"
                   >
                     ← Back to login
